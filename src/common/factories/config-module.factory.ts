@@ -16,7 +16,24 @@ export const ENV_KEY = {
   REFRESH_TOKEN_EXPIRES_IN: 'REFRESH_TOKEN_EXPIRES_IN',
 
   LOGGER_LEVEL: 'LOGGER_LEVEL',
+  CORS_ALLOWED_ORIGINS: 'CORS_ALLOWED_ORIGINS',
 } as const;
+
+const parseCommaSeparatedStringArray = (
+  rawValue: string,
+  helpers: Joi.CustomHelpers,
+): string[] => {
+  const parsedOrigins: string[] = rawValue
+    .split(',')
+    .map((origin: string) => origin.trim())
+    .filter((origin: string) => origin.length > 0);
+
+  if (parsedOrigins.length === 0) {
+    return helpers.error('any.invalid') as never;
+  }
+
+  return parsedOrigins;
+};
 
 export const ConfigModuleFactory = () => {
   return ConfigModule.forRoot({
@@ -40,6 +57,9 @@ export const ConfigModuleFactory = () => {
       [ENV_KEY.LOGGER_LEVEL]: Joi.string()
         .valid('silent', 'fatal', 'error', 'warn', 'info', 'debug', 'trace')
         .default('info'),
+      [ENV_KEY.CORS_ALLOWED_ORIGINS]: Joi.string()
+        .required()
+        .custom(parseCommaSeparatedStringArray),
     }),
   });
 };

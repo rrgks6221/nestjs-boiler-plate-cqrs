@@ -5,11 +5,13 @@ import {
   ValidationPipe,
   ValidationPipeOptions,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import cookieParser from 'cookie-parser';
 
 import { BaseHttpExceptionFilter } from '@common/base/base-http-exception-filter';
 import { RequestValidationError } from '@common/base/base.error';
+import { ENV_KEY } from '@common/factories/config-module.factory';
 
 import { LOGGER } from '@shared/logger/logger.module';
 
@@ -17,10 +19,17 @@ export const setCookie = (app: INestApplication) => {
   app.use(cookieParser());
 };
 
+/**
+ * @todo 보일러플레이트에서는 ENV `CORS_ALLOWED_ORIGINS` 기반 allowlist만 제공합니다.
+ *       운영 환경에서는 배포 도메인/스테이징 도메인을 명시적으로 관리하세요.
+ *       필요 시 서브도메인 패턴/동적 검증이 필요하면 origin callback 방식으로 확장하세요.
+ */
 export const setCors = (app: INestApplication) => {
+  const configService = app.get(ConfigService);
+
   app.enableCors({
     credentials: true,
-    origin: true,
+    origin: configService.getOrThrow<string[]>(ENV_KEY.CORS_ALLOWED_ORIGINS),
   });
 };
 
