@@ -9,7 +9,6 @@ export abstract class DomainEvent<Payload = Record<string, any>> {
   eventName: string;
   eventPayload: Payload;
   occurredAt: Date;
-  version: number;
 
   constructor(aggregateId: string, eventPayload: Payload) {
     this.id = TSID.create().number.toString();
