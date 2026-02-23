@@ -1,5 +1,5 @@
+import { AuthTokenValidationError } from '@module/auth-security/errors/auth-token-validation.error';
 import { AuthToken } from '@module/auth/entities/auth-token.vo';
-import { AuthTokenValidationError } from '@module/auth/errors/auth-token-validation.error';
 
 import { BaseValueObject } from '@common/base/base.value-object';
 

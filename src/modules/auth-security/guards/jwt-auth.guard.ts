@@ -2,16 +2,20 @@ import {
   CanActivate,
   ExecutionContext,
   HttpStatus,
+  Inject,
   Injectable,
   SetMetadata,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
 
 import { Request } from 'express';
 import { ClsService } from 'nestjs-cls';
 
-import { AuthTokenType } from '@module/auth/entities/auth-token.vo';
+import { AuthTokenValidationError } from '@module/auth-security/errors/auth-token-validation.error';
+import {
+  AUTH_TOKEN_SERVICE,
+  IAuthTokenService,
+} from '@module/auth-security/services/auth-token.service.interface';
 
 import { BaseHttpException } from '@common/base/base-http-exception';
 import { UnauthorizedError } from '@common/base/base.error';
@@ -19,15 +23,11 @@ import { CLS_STORE_KEY } from '@common/constants/cls-store-key.constant';
 
 export const Public = () => SetMetadata('isPublic', true);
 
-interface AccessTokenPayload {
-  sub: string;
-  tokenType: AuthTokenType;
-}
-
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
-    private readonly jwtService: JwtService,
+    @Inject(AUTH_TOKEN_SERVICE)
+    private readonly authTokenService: IAuthTokenService,
     private readonly reflector: Reflector,
     private readonly clsService: ClsService,
   ) {}
@@ -53,28 +53,24 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     try {
-      const payload =
-        await this.jwtService.verifyAsync<AccessTokenPayload>(token);
-
-      if (payload.tokenType !== 'access') {
-        throw new BaseHttpException(
-          HttpStatus.UNAUTHORIZED,
-          new UnauthorizedError(),
-        );
-      }
+      const payload = await this.authTokenService.verifyAccessToken(token);
 
       this.clsService.set(CLS_STORE_KEY.ACTOR_ID, payload.sub);
       request['user'] = {
         id: payload.sub,
       };
-    } catch {
-      throw new BaseHttpException(
-        HttpStatus.UNAUTHORIZED,
-        new UnauthorizedError(),
-      );
-    }
 
-    return true;
+      return true;
+    } catch (error) {
+      if (error instanceof AuthTokenValidationError) {
+        throw new BaseHttpException(
+          HttpStatus.UNAUTHORIZED,
+          new UnauthorizedError(error.message),
+        );
+      }
+
+      throw error;
+    }
   }
 
   private extractTokenFromCookie(request: Request): string | undefined {

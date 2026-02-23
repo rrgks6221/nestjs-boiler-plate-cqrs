@@ -4,10 +4,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { faker } from '@faker-js/faker';
 
+import { AuthTokenService } from '@module/auth-security/services/auth-token.service';
+import { AUTH_TOKEN_SERVICE } from '@module/auth-security/services/auth-token.service.interface';
 import { AuthTokens } from '@module/auth/entities/auth-tokens.vo';
 import { SignInfoMismatchedError } from '@module/auth/errors/sign-info-mismatched.error';
-import { AuthTokenService } from '@module/auth/services/auth-token.service';
-import { AUTH_TOKEN_SERVICE } from '@module/auth/services/auth-token.service.interface';
 import { SignInWithUsernameCommandFactory } from '@module/auth/use-cases/sign-in-with-username/__spec__/sign-in-with-username.command.factory';
 import { SignInWithUsernameCommand } from '@module/auth/use-cases/sign-in-with-username/sign-in-with-username.command';
 import { SignInWithUsernameHandler } from '@module/auth/use-cases/sign-in-with-username/sign-in-with-username.handler';

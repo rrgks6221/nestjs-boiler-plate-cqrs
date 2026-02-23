@@ -3,11 +3,11 @@ import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { Transactional } from '@nestjs-cls/transactional';
 
-import { AuthTokens } from '@module/auth/entities/auth-tokens.vo';
 import {
   AUTH_TOKEN_SERVICE,
   IAuthTokenService,
-} from '@module/auth/services/auth-token.service.interface';
+} from '@module/auth-security/services/auth-token.service.interface';
+import { AuthTokens } from '@module/auth/entities/auth-tokens.vo';
 import { SignUpWithUsernameCommand } from '@module/auth/use-cases/sign-up-with-username/sign-up-with-username.command';
 import { User } from '@module/user/domain/user.entity';
 import { CreateUserWithUsernameCommand } from '@module/user/use-cases/create-user-with-username/create-user-with-username.command';

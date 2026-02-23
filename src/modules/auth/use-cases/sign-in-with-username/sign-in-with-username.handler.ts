@@ -3,12 +3,12 @@ import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 
 import { Transactional } from '@nestjs-cls/transactional';
 
-import { AuthTokens } from '@module/auth/entities/auth-tokens.vo';
-import { SignInfoMismatchedError } from '@module/auth/errors/sign-info-mismatched.error';
 import {
   AUTH_TOKEN_SERVICE,
   IAuthTokenService,
-} from '@module/auth/services/auth-token.service.interface';
+} from '@module/auth-security/services/auth-token.service.interface';
+import { AuthTokens } from '@module/auth/entities/auth-tokens.vo';
+import { SignInfoMismatchedError } from '@module/auth/errors/sign-info-mismatched.error';
 import { SignInWithUsernameCommand } from '@module/auth/use-cases/sign-in-with-username/sign-in-with-username.command';
 import { User } from '@module/user/domain/user.entity';
 import { UserNotFoundError } from '@module/user/errors/user-not-found.error';

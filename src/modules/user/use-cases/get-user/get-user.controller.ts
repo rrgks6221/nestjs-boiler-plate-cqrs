@@ -7,7 +7,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtAuthGuard } from '@module/auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '@module/auth-security/guards/jwt-auth.guard';
 import { UserDtoAssembler } from '@module/user/assemblers/user-dto.assembler';
 import { User } from '@module/user/domain/user.entity';
 import { UserDto } from '@module/user/dto/user.dto';
